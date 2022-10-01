@@ -12,3 +12,5 @@ void DisplayGameState(vector<char> gameState)
          << gameState[6] << '|' << gameState[7] << '|' << gameState[8]
          << endl;
 }
+
+

@@ -1,7 +1,6 @@
 #include <iostream>
 #include "UnbeatableTicTacToeCpp.h"
 
-
 /*
 M   M    A    I  N   N
 MM MM   A A   I  NN  N
@@ -21,14 +20,15 @@ int main(int argc, char const *argv[])
     {
         char firstPlayer = ChooseFirstPlayer();
         bool firstGo = true;
-        
+
         // game loop
         bool gameGoing = true;
         do
         {
             int input, aiInput;
             int indexOfInput, indexOfAIInput;
-            if (firstPlayer == 'X' && firstGo == true) {
+            if (firstPlayer == 'X' && firstGo == true)
+            {
                 // AI play
                 aiInput = AIInput(freeSpaces, gameState);
                 indexOfAIInput = IndexOf(aiInput, freeSpaces);
@@ -44,11 +44,31 @@ int main(int argc, char const *argv[])
             indexOfInput = IndexOf(input, freeSpaces);
             freeSpaces.erase(freeSpaces.begin() + indexOfInput);
             gameState[input] = 'O';
-            // AI play
-            aiInput = AIInput(freeSpaces, gameState);
-            indexOfAIInput = IndexOf(aiInput, freeSpaces);
-            freeSpaces.erase(freeSpaces.begin() + indexOfAIInput);
-            gameState[aiInput] = 'X';
+
+            gameGoing = ExistsWinner(gameState);
+
+            if (gameGoing == true)
+            {
+                // AI play
+                aiInput = AIInput(freeSpaces, gameState);
+                indexOfAIInput = IndexOf(aiInput, freeSpaces);
+                freeSpaces.erase(freeSpaces.begin() + indexOfAIInput);
+                gameState[aiInput] = 'X';
+            }
+
+            gameGoing = ExistsWinner(gameState);
+
+            if (gameGoing == false)
+            {
+                char yn;
+                do
+                {
+                    cout << "Play again? (y/n) ";
+                    cin >> yn;
+                    yn = tolower(yn);
+                } while (yn != 'y' && yn != 'n');
+                repeat = yn == 'y' ? true : false;
+            }
 
         } while (gameGoing);
     } while (repeat);
