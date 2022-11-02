@@ -1,76 +1,62 @@
 #include <iostream>
-#include "UnbeatableTicTacToeCpp.h"
+#include "Tictactoe.h"
 
-/*
-M   M    A    I  N   N
-MM MM   A A   I  NN  N
-M M M  A   A  I  N N N
-M   M  AAAAA  I  N  NN
-M   M  A   A  I  N   N
-*/
+using namespace std;
+
 int main(int argc, char const *argv[])
 {
-    // global variables
-    vector<char> gameState = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
-    vector<int> freeSpaces = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-
-    // main loop
+    system("cls");
+    // repeat loop
     bool repeat = true;
-    do // repeat the game until !repeat
+    do
     {
-        char firstPlayer = ChooseFirstPlayer();
-        bool firstGo = true;
-
+        Tictactoe Game;
+        Game.choosePiece();
+        Game.chooseFirstPlayer();
         // game loop
         bool gameGoing = true;
+        char state;
+        if (Game.getFirstPlayer() == Game.getBotPlayer())
+        {
+            Game.aiPlay();
+        }
         do
         {
-            int input, aiInput;
-            int indexOfInput, indexOfAIInput;
-            if (firstPlayer == 'X' && firstGo == true)
+            Game.displayGameState();
+            Game.playInPosition(Game.playerInput(), Game.getHumanPlayer());
+            state = Game.checkGameState();
+            if (state != ' ')
             {
-                // AI play
-                aiInput = AIInput(freeSpaces, gameState);
-                indexOfAIInput = IndexOf(aiInput, freeSpaces);
-                freeSpaces.erase(freeSpaces.begin() + indexOfAIInput);
-                gameState[aiInput] = 'X';
-                firstGo = false;
+                gameGoing = false;
             }
-
-            DisplayGameState(gameState);
-
-            // Human play
-            input = PlayerInput(freeSpaces);
-            indexOfInput = IndexOf(input, freeSpaces);
-            freeSpaces.erase(freeSpaces.begin() + indexOfInput);
-            gameState[input] = 'O';
-
-            gameGoing = ExistsWinner(gameState);
-
-            if (gameGoing == true)
+            else
             {
-                // AI play
-                aiInput = AIInput(freeSpaces, gameState);
-                indexOfAIInput = IndexOf(aiInput, freeSpaces);
-                freeSpaces.erase(freeSpaces.begin() + indexOfAIInput);
-                gameState[aiInput] = 'X';
-            }
-
-            gameGoing = ExistsWinner(gameState);
-
-            if (gameGoing == false)
-            {
-                char yn;
-                do
+                Game.aiPlay();
+                state = Game.checkGameState();
+                if (state != ' ')
                 {
-                    cout << "Play again? (y/n) ";
-                    cin >> yn;
-                    yn = tolower(yn);
-                } while (yn != 'y' && yn != 'n');
-                repeat = yn == 'y' ? true : false;
+                    gameGoing = false;
+                }
             }
-
         } while (gameGoing);
+        Game.displayGameState();
+        if (state == 'D')
+        {
+            cout << "\nDraw\n" << endl;
+        }
+        else
+        {
+            cout << "\nWinner: " << state << endl << endl;
+        }
+
+        // check if repeat
+        char rep;
+        cout << "Repeat? (Y / N): ";
+        do
+        {
+            cin >> rep;
+        } while (rep != 'y' && rep != 'Y' && rep != 'n' && rep != 'N');
+        repeat = (rep == 'y' || rep == 'Y') ? true : false;
     } while (repeat);
 
     return 0;
