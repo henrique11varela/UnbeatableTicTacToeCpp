@@ -4,12 +4,11 @@
 using namespace std;
 
 Tictactoe::Tictactoe()
-    : gameState(new char[9]), freeSpaces(new int[9]), firstPlayer(' '), botPlayer(' '), humanPlayer(' ')
+    : gameState(new char[9]), firstPlayer(' '), botPlayer(' '), humanPlayer(' ')
 {
     for (int i = 0; i < 9; i++)
     {
         gameState[i] = ' ';
-        freeSpaces[i] = i;
     }
     possibilities[0][0] = 0;
     possibilities[0][1] = 1;
@@ -92,7 +91,7 @@ int Tictactoe::playerInput()
 
 bool Tictactoe::checkPosition(int input)
 {
-    if (this->freeSpaces[input] == input)
+    if (this->gameState[input] == ' ')
     {
         return true;
     }
@@ -116,7 +115,6 @@ bool Tictactoe::playInPosition(int input, char player)
     if (this->checkPosition(input))
     {
         this->gameState[input] = player;
-        this->freeSpaces[input] = 9;
         return true;
     }
     return false;
@@ -161,7 +159,6 @@ void Tictactoe::aiPlay()
         {
             int curScore = miniMax(9, false);
             gameState[i] = ' ';
-            freeSpaces[i] = i;
             if (curScore > bestScore)
             {
                 bestScore = curScore;
@@ -190,7 +187,6 @@ int Tictactoe::miniMax(int depth, bool isMaximizing)
         {
             int curScore = miniMax(depth - 1, !isMaximizing);
             gameState[i] = ' ';
-            freeSpaces[i] = i;
             if ((isMaximizing && (curScore > bestScore)) || (!isMaximizing && (curScore < bestScore)))
             {
                 bestScore = curScore;

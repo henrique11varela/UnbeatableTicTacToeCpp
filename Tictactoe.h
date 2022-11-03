@@ -4,7 +4,6 @@
 class Tictactoe {
     private:
         char *gameState;
-        int *freeSpaces;
         char firstPlayer;
         char botPlayer;
         char humanPlayer;
