@@ -1,5 +1,7 @@
 #include "Tictactoe.h"
 #include <iostream>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 using namespace std;
 
@@ -45,7 +47,8 @@ void Tictactoe::choosePiece()
         cout << "Choose your piece X or O: ";
         cin >> humanPlayer;
     } while (humanPlayer != 'x' && humanPlayer != 'X' && humanPlayer != 'o' && humanPlayer != 'O');
-    this->humanPlayer = (humanPlayer == 'x' || humanPlayer == 'X') ? 'X' : 'O';;
+    this->humanPlayer = (humanPlayer == 'x' || humanPlayer == 'X') ? 'X' : 'O';
+    ;
     this->botPlayer = (humanPlayer == 'x' || humanPlayer == 'X') ? 'O' : 'X';
 }
 
@@ -151,22 +154,31 @@ void Tictactoe::displayGameState()
 
 void Tictactoe::aiPlay()
 {
+    srand (time(NULL));
     int bestScore = -1000;
-    int bestMove = 9;
+    int size = 0;
+    int bestMoves[9];
+
     for (int i = 0; i < 9; i++)
     {
         if (this->playInPosition(i, botPlayer))
         {
             int curScore = miniMax(9, false);
             gameState[i] = ' ';
+
             if (curScore > bestScore)
             {
                 bestScore = curScore;
-                bestMove = i;
+                size = 1;
+                bestMoves[0] = i;
+            }
+            else if (curScore == bestScore)
+            {
+                bestMoves[size++] = i;
             }
         }
     }
-    this->playInPosition(bestMove, botPlayer);
+    this->playInPosition(bestMoves[rand() % (size)], botPlayer);
 };
 
 int Tictactoe::miniMax(int depth, bool isMaximizing)
@@ -174,11 +186,11 @@ int Tictactoe::miniMax(int depth, bool isMaximizing)
     char winner = this->checkGameState();
     if (winner != ' ')
     {
-        return (winner == botPlayer && gameState[4] == botPlayer) ? (2 + depth) 
-               : (winner == botPlayer) ? (1 + depth)
+        return (winner == botPlayer && gameState[4] == botPlayer)       ? (2 + depth)
+               : (winner == botPlayer)                                  ? (1 + depth)
                : (winner == humanPlayer && gameState[4] == humanPlayer) ? (-2 - depth)
-               : (winner == humanPlayer) ? (-1 - depth)
-                                         : 0;
+               : (winner == humanPlayer)                                ? (-1 - depth)
+                                                                        : 0;
     }
     int bestScore = ((isMaximizing) ? -1000 : 1000);
     for (int i = 0; i < 9; i++)
